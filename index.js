@@ -1,55 +1,20 @@
 
 require('dotenv').config() 
-const twilio = require('twilio');
-const cron = require('node-cron');
 const express = require('express');
+const { engine } = require('express-handlebars');
 const app = express();
 const port = 3000;
-const people = [
-  {
-    name: 'Ivan',
-    amount: 41,
-    msg: 'T-mobile',
-    number: '+13147240837'
-  },
-  {
-    name: 'Victor',
-    amount: 55,
-    msg: 'T-mobile',
-    number: '+13145701256'
-  }
-
-];
-
-const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
-const accountSid = process.env.TWILIO_ACCOUNT_SID;
-const authToken = process.env.TWILIO_AUTH_TOKEN;
-const twilioNumber = process.env.TWILIO_PHONE_NUMBER
-const venmoLink = process.env.VENMO_DEEP_LINK;
-const month = new Date().getUTCMonth()
+const schedule = require('./routes/schedule');
+process.env.NODE_ENV = 'development'
 
 
-const client = twilio(accountSid, authToken);
+app.engine('handlebars', engine());
+app.set('view engine', 'handlebars');
+app.set('views', './views');
 
-
+app.use('/', schedule);
 
 app.listen(port , () => {
   console.log('Listening on port', port)
-  cron.schedule('* 30 9 23 * *', function() {
-    console.log('Sending messages')
-    people.forEach(({name, amount, msg, number}) => {
-      return client.messages.create({
-        body: !number ? `No number for ${name}` : `📱 ${months[month].toUpperCase()} \n ${msg}: ${name} - $${amount}. \n ${venmoLink} `,
-        from:twilioNumber,
-        to:  number || '+13147240839',
-      }).then((message) => {
-        console.log({message})
-        client.messages.create({
-          body: `${msg} reminder sent to: ${name}  - ${message.dateUpdated.toUTCString()}`,
-          from: twilioNumber,
-          to:  '+13147240839',
-        })
-      }).catch(err => console.error(err))
-    })
-  });
+  console.log('env', process.env.NODE_ENV)
 })

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>PayPiper</title>
+</head>
+<style>
+  body{
+    width: 100%;
+    margin: 16px;
+  }
+  h1, h2, h3, h4, h5, p{
+    font-family: sans-serif;
+  }
+  h1.title{
+    color: purple;
+
+  }
+  .jobs{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 16px
+  }
+  .job-box{
+    padding-left: 8px;
+    padding-right: 8px;
+    border: 2px solid lightgray;
+    border-radius: 5px;
+  }
+ 
+</style>
+<body>
+
+    <h1 class="title">{{{content}}}</h1>
+   <div class="jobs">
+     <div class="job-box">
+      <h5>Current Job: {{{date currentMonth}}}</h5>
+     </div>
+     <div class="job-box">
+    <h5>Next Job: {{{ date nextJob}}}</h5>
+
+     </div>
+   </div>
+<p>{{{cronTranslate schedule }}}</p>
+</body>
+</html>
